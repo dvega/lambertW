@@ -79,15 +79,17 @@ public final class Lambert {
      */
     private static double halley_iterate(double w_est, double z)
     {
-        final double max_diff = Math.sqrt(Math.ulp(w_est));
+        double max_diff = Math.ulp(w_est);
 
-        double diff = 2 * max_diff;
         while (true) {
             double w_new = halley_step(w_est, z);
-            if (diff <= max_diff) return w_new;
-            diff = Math.abs(w_est - w_new);
+            double diff = Math.abs(w_est - w_new);
             w_est = w_new;
+            if (diff <= max_diff) break;
+            max_diff *= 2;
         }
+
+        return halley_step(w_est, z);
     }
 
     private static double halley_step(double w_est, double z) {

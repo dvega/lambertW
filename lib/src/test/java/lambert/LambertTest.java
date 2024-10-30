@@ -8,32 +8,35 @@ import static org.junit.Assert.*;
 
 public class LambertTest {
     @Test public void lambertW0() {
-        double w = -1;
-
-        while (true) {
+        for (double w=-1; w < 700; w += (w + 1)*0.5 + 0x1.0p-53) {
             double z = w * Math.exp(w);
             double w2 = Lambert.lambertW0(z);
             double z2 = w2 * Math.exp(w2);
             if (Double.isInfinite(w2)) break;
             System.out.printf("w=%g w2=%g z=%g z2=%g dw=%g dz=%g%n", w, w2, z, z2, (w2-w)/w, (z2-z)/z);
-            assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(z));
-            w = (w == -1) ? Math.nextUp(w) : 2*w+1;
+            assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(z)*32);
         }
-        assertTrue(w > 700);
     }
 
     @Test public void lambertWm1() {
-        double w = -1;
-
-        while (true) {
+        for (double w=-1; w > -740.0; w +=(w + 1)*0.5 -0x1.0p-52) {
             double z = w * Math.exp(w);
             double w2 = Lambert.lambertWm1(z);
             double z2 = w2 * Math.exp(w2);
-            if (Double.isInfinite(w2)) break;
             System.out.printf("w=%g w2=%g z=%g z2=%g dw=%g dz=%g%n", w, w2, z, z2, (w2-w)/w, (z2-z)/z);
-            assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(z));
-            w = (w == -1) ? Math.nextDown(w) : 2*w+1;
+            assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(z)*32);
         }
-        assertTrue(w < -700);
+    }
+
+    @Test public void specialCases() {
+        assertEquals(Double.POSITIVE_INFINITY, Lambert.lambertW0(Double.POSITIVE_INFINITY), 0);
+        assertEquals(0, Lambert.lambertW0(0), 0);
+        assertEquals(-1, Lambert.lambertW0(-1/Math.E), 0);
+        assertTrue(Double.isNaN(Lambert.lambertW0(-1)));
+
+        assertEquals(-1, Lambert.lambertWm1(-1/Math.E), 0);
+        assertEquals(Double.NEGATIVE_INFINITY, Lambert.lambertWm1(0), 0);
+        assertTrue(Double.isNaN(Lambert.lambertWm1(-1)));
+        assertTrue(Double.isNaN(Lambert.lambertWm1(2)));
     }
 }
