@@ -13,13 +13,13 @@ public class LambertTest {
         while (true) {
             double z = w * Math.exp(w);
             double w2 = Lambert.lambertW0(z);
-            double z2 = w * Math.exp(w);
+            double z2 = w2 * Math.exp(w2);
             if (Double.isInfinite(w2)) break;
             System.out.printf("w=%g w2=%g z=%g z2=%g dw=%g dz=%g%n", w, w2, z, z2, (w2-w)/w, (z2-z)/z);
-            assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(w)*8);
-            w = (w == -1) ? Math.nextUp(w) : 2*(w + 1) - 1;
+            assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(z));
+            w = (w == -1) ? Math.nextUp(w) : 2*w+1;
         }
-
+        assertTrue(w > 700);
     }
 
     @Test public void lambertWm1() {
@@ -28,11 +28,12 @@ public class LambertTest {
         while (true) {
             double z = w * Math.exp(w);
             double w2 = Lambert.lambertWm1(z);
-            double z2 = w * Math.exp(w);
+            double z2 = w2 * Math.exp(w2);
             if (Double.isInfinite(w2)) break;
             System.out.printf("w=%g w2=%g z=%g z2=%g dw=%g dz=%g%n", w, w2, z, z2, (w2-w)/w, (z2-z)/z);
-            assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(w)*8);
-            w = (w == -1) ? Math.nextDown(w) : 1+2*w;
+            assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(z));
+            w = (w == -1) ? Math.nextDown(w) : 2*w+1;
         }
+        assertTrue(w < -700);
     }
 }
