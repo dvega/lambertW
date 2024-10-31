@@ -95,7 +95,8 @@ public final class Lambert {
     private static double halley_step(double w_est, double z) {
         double exp_west = Math.exp(w_est);
         double z_est = w_est * exp_west;
-        return w_est - 2/(2*(z_est+exp_west)/(z_est - z) - (w_est+2)/(w_est+1));
+        double z_diff = z_est - z;
+        return w_est - 2*z_diff / (2*(z_est+exp_west) - (w_est+2)/(w_est+1) * z_diff);
     }
 
     private static final class W0 {
