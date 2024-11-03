@@ -1,8 +1,9 @@
 package lambert;
 
 /**
- * Implementation of an algorithm for the Lambert W<sub>0</sub> and W<sub>-1</sub> real-only functions.
- * <p>The Lambert W function is defined as: W(z ⋅ e<sup>z</sup>) = z
+ * Implementation of an algorithm for the Lambert <font face="serif"><i>W<sub>0</sub></i></font> and
+ * <font face="serif"><i>W<sub>-1</i></sub></font> real-only functions.
+ * <p>The Lambert W function is defined as: <font face="serif"><i>W(z ⋅ e<sup>z</sup>) = z</i></font>
  * </p>
  * <p>
  *     This code is based on the FORTRAN algorithm by Toshio Fukushima,
@@ -55,14 +56,14 @@ public final class Lambert {
     }
 
     /**
-     * Compute W<sub>0</sub>(z), Lambert W-function of the branch 0
+     * Compute <font face="serif"><i>W<sub>0</sub>(z)</i></font>, Lambert W-function of the branch 0
      */
     public static double lambertW0(double z) {
         return W0.lambert(z);
     }
 
     /**
-     * Compute W<sub>-1</sub>(z), Lambert W-function of the branch -1
+     * Compute <font face="serif"><i>W<sub>-1</sub>(z)</i></font>, Lambert W-function of the branch -1
      */
     public static double lambertWm1(double z) {
         return Wm1.lambert(z);
@@ -79,24 +80,22 @@ public final class Lambert {
      */
     private static double halley_iterate(double w_est, double z)
     {
-        double max_diff = Math.ulp(w_est);
+        final double max_diff = Math.sqrt(Math.ulp(w_est));
 
+        double diff = 2*max_diff;
         while (true) {
             double w_new = halley_step(w_est, z);
-            double diff = Math.abs(w_est - w_new);
+            if (diff <= max_diff) return w_new;
+            diff = Math.abs(w_est - w_new);
             w_est = w_new;
-            if (diff <= max_diff) break;
-            max_diff *= 2;
         }
-
-        return halley_step(w_est, z);
-    }
+  }
 
     private static double halley_step(double w_est, double z) {
         double exp_west = Math.exp(w_est);
         double z_est = w_est * exp_west;
         double z_diff = z_est - z;
-        return w_est - 2*z_diff / (2*(z_est+exp_west) - (w_est+2)/(w_est+1) * z_diff);
+        return w_est - z_diff / (z_est + exp_west - z_diff * (1 + 1/(w_est+1)) / 2);
     }
 
     private static final class W0 {

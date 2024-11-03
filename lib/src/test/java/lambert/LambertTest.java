@@ -12,14 +12,13 @@ public class LambertTest {
             double z = w * Math.exp(w);
             double w2 = Lambert.lambertW0(z);
             double z2 = w2 * Math.exp(w2);
-            if (Double.isInfinite(w2)) break;
             System.out.printf("w=%g w2=%g z=%g z2=%g dw=%g dz=%g%n", w, w2, z, z2, (w2-w)/w, (z2-z)/z);
             assertEquals("w=" + w + ", w2=" + w2, z, z2, Math.ulp(z)*32);
         }
     }
 
     @Test public void lambertWm1() {
-        for (double w=-1; w > -740.0; w +=(w + 1)*0.5 -0x1.0p-52) {
+        for (double w=-1; w > -740.0; w +=(w + 1)*0.5 - 0x1.0p-52) {
             double z = w * Math.exp(w);
             double w2 = Lambert.lambertWm1(z);
             double z2 = w2 * Math.exp(w2);
